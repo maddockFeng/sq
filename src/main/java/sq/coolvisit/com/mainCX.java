@@ -10,20 +10,23 @@ import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
 
 import java.io.*;
-import java.sql.Array;
 import java.util.*;
 
-public class main {
-
+/**
+ * 导入只有照片的文件格式到excel表，并将照片改名为工号
+ */
+public class mainCX {
+    static String outPath = "/Users/imac7/out/";
     public static void main(String[] args) {
-        import1();
+        traverseFolder1("/Users/imac7/0605");
     }
 
-    public void traverseFolder1(String path) {
+    public static void traverseFolder1(String path) {
         int fileNum = 0, folderNum = 0;
         File file = new File(path);
         if (file.exists()) {
             LinkedList<File> list = new LinkedList<File>();
+            LinkedList<File> listFile = new LinkedList<File>();
             File[] files = file.listFiles();
             for (File file2 : files) {
                 if (file2.isDirectory()) {
@@ -32,6 +35,7 @@ public class main {
                     folderNum++;
                 } else {
                     System.out.println("文件:" + file2.getAbsolutePath());
+                    listFile.add(file2);
                     fileNum++;
                 }
             }
@@ -46,10 +50,24 @@ public class main {
                         folderNum++;
                     } else {
                         System.out.println("文件:" + file2.getAbsolutePath());
+                        listFile.add(file2);
                         fileNum++;
                     }
                 }
             }
+
+            List<Map> mapList = new ArrayList<Map>();
+            //生成excel表
+            for(int i=0;i<listFile.size();i++){
+                Map map = new HashMap();
+                File f = listFile.get(i);
+                map.put("name",f.getName().substring(0,f.getName().lastIndexOf(".")));
+                map.put("phone","1000"+i);
+                mapList.add(map);
+                FixFileName(f.getPath(), (String) map.get("phone"));
+            }
+
+            writeExcel(mapList);
         } else {
             System.out.println("文件不存在!");
         }
@@ -57,8 +75,8 @@ public class main {
 
     }
 
-    public static void import1(){
-        String path = main.class.getClassLoader().getResource("fk.json").getPath();
+    public void import1(){
+        String path = mainCX.class.getClassLoader().getResource("fk.json").getPath();
         String s = readJsonFile(path);
         JSONArray ja = JSON.parseArray(s);
         List<Map> mapList = new ArrayList<Map>();
@@ -144,7 +162,7 @@ public class main {
         if (f.isDirectory()) { // 判断是否为文件夹
             newFilePath = filePath.substring(0, filePath.lastIndexOf("/")) + "/" + newFileName;
         } else {
-            newFilePath =  "F:/fk/" + newFileName
+            newFilePath =  outPath + newFileName
                     + filePath.substring(filePath.lastIndexOf("."));
         }
         File nf = new File(newFilePath);
@@ -162,7 +180,8 @@ public class main {
                 //开始写入excel,创建模型文件头
                 String[] titleA = {"name","phone","email","nickname","dp","remark"};
                 //创建Excel文件，B库CD表文件
-                File fileA = new File("F:/TestFile.xls");
+                File fileA = new File(outPath+"TestFile.xls");
+                System.out.println("人数:"+maplist.size());
                 if(fileA.exists()){
                     //如果文件存在就删除
                     fileA.delete();
@@ -186,8 +205,7 @@ public class main {
                         sheetA.addCell(labelA);
                         labelA = new Label(1,i,(String) map.get("phone"));
                         sheetA.addCell(labelA);
-                        labelA = new Label(2,i,(String) map.get("email"));
-                        sheetA.addCell(labelA);
+                        System.out.println(""+(String) map.get("name")+" "+(String) map.get("phone"));
                     }
                     workbookA.write();    //写入数据        
                     workbookA.close();  //关闭连接
