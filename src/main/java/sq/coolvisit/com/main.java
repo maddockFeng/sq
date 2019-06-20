@@ -11,53 +11,13 @@ import jxl.write.WritableWorkbook;
 
 import java.io.*;
 import java.sql.Array;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class main {
-
     public static void main(String[] args) {
-        import1();
-    }
-
-    public void traverseFolder1(String path) {
-        int fileNum = 0, folderNum = 0;
-        File file = new File(path);
-        if (file.exists()) {
-            LinkedList<File> list = new LinkedList<File>();
-            File[] files = file.listFiles();
-            for (File file2 : files) {
-                if (file2.isDirectory()) {
-                    System.out.println("文件夹:" + file2.getAbsolutePath());
-                    list.add(file2);
-                    folderNum++;
-                } else {
-                    System.out.println("文件:" + file2.getAbsolutePath());
-                    fileNum++;
-                }
-            }
-            File temp_file;
-            while (!list.isEmpty()) {
-                temp_file = list.removeFirst();
-                files = temp_file.listFiles();
-                for (File file2 : files) {
-                    if (file2.isDirectory()) {
-                        System.out.println("文件夹:" + file2.getAbsolutePath());
-                        list.add(file2);
-                        folderNum++;
-                    } else {
-                        System.out.println("文件:" + file2.getAbsolutePath());
-                        fileNum++;
-                    }
-                }
-            }
-        } else {
-            System.out.println("文件不存在!");
-        }
-        System.out.println("文件夹共有:" + folderNum + ",文件共有:" + fileNum);
-
-    }
-
-    public static void import1(){
         String path = main.class.getClassLoader().getResource("fk.json").getPath();
         String s = readJsonFile(path);
         JSONArray ja = JSON.parseArray(s);
