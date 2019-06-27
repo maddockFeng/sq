@@ -20,12 +20,10 @@ import static java.lang.Thread.sleep;
  * 导入只有照片的文件格式到excel表，并将照片改名为工号
  */
 public class mainCX {
-    static String outPath = "/Users/imac7/out/";
+    static String outPath = "f://avatarFile/";
     public static void main(String[] args) {
-//        traverseFolder1("/Users/imac7/0605");
-        String path = "d:/90001.jpg";
-        String name = path.substring(path.lastIndexOf("/")+1, path.lastIndexOf(".")) ;
-        System.out.println("name:"+name);
+        traverseFolder1("f://in");
+
 
     }
 
@@ -84,32 +82,32 @@ public class mainCX {
 
                 //TODO 调用接口直接上传
 
-            for(int i=0;i<listFile.size();i++){
-                System.out.println("add person "+i);
-                addPerson(listFile.get(i).getPath(),i);
-                try {
-                    sleep(1000*10);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
-            }
-
-//
-//            List<Map> mapList = new ArrayList<Map>();
-//            //生成excel表
 //            for(int i=0;i<listFile.size();i++){
-//                Map map = new HashMap();
-//                File f = listFile.get(i);
-//                map.put("name",f.getName().substring(0,f.getName().lastIndexOf(".")));
-//                map.put("phone","1000"+i);
-//                mapList.add(map);
+//                System.out.println("add person "+i);
+//                addPerson(listFile.get(i).getPath(),i);
+//                try {
+//                    sleep(1000*10);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
 //
-//                //文件改名
-//                FixFileName(f.getPath(), (String) map.get("phone"));
 //            }
 
-//            writeExcel(mapList);
+
+            List<Map> mapList = new ArrayList<Map>();
+            //生成excel表
+            for(int i=0;i<listFile.size();i++){
+                Map map = new HashMap();
+                File f = listFile.get(i);
+                map.put("name",f.getName().substring(0,f.getName().lastIndexOf(".")));
+                map.put("phone","1000"+i);
+                mapList.add(map);
+
+                //文件改名
+                FixFileName(f.getPath(), (String) map.get("phone"));
+            }
+
+            writeExcel(mapList);
         } else {
             System.out.println("文件不存在!");
         }
@@ -222,7 +220,7 @@ public class mainCX {
                 //开始写入excel,创建模型文件头
                 String[] titleA = {"name","phone","email","nickname","dp","remark"};
                 //创建Excel文件，B库CD表文件
-                File fileA = new File(outPath+"TestFile.xls");
+                File fileA = new File(outPath+"csvFile.xls");
                 System.out.println("人数:"+maplist.size());
                 if(fileA.exists()){
                     //如果文件存在就删除
